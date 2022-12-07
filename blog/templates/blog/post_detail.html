@@ -1,0 +1,17 @@
+{% extends 'blog/base.html '%}
+
+{% block content %}
+    <section class="section ">
+        <h1> {{ post.title }}</h1>
+        <article>
+
+            {{ post.content }}
+
+        </article>
+        <h3>Posted by {{ post.author }}</h3>
+    </section>
+    {% if post.author == user %}
+        <a class="btn btn-outline-primary" href="{% url 'update-post' post.id %}"><i class="fa-solid fa-pen-to-square"></i></a>
+        <a class="btn btn-outline-danger" href="{% url 'delete-post' post.id %}"><i class="fa-solid fa-trash"></i></a>
+    {% endif %}
+{% endblock %}

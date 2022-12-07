@@ -1,0 +1,23 @@
+{% extends 'blog/base.html '%}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="container">
+    <img src="{{ user.profile.image.url }}">
+    <h4>Username: {{ user.username }}</h4>
+    <h4> Email: {{ user.email }}</h4>
+    <h5>
+        Change Password <a href="{% url 'change-password' %}">Here</a>
+    </h5>
+    <br>
+</div>
+    <div class="container">
+      <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+        <legend> UPDATE PROFILE </legend>
+          {{ u_form|crispy }}
+          {{ p_form|crispy }}
+        <input class="btn btn-primary" type="submit" value="Update">
+      </form>
+    </div>
+{% endblock %}
