@@ -1,6 +1,10 @@
+from django.shortcuts import render
+from django.urls import reverse
+from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import PostDb
+from .models import PostDb, CommentDb
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from .forms import CommentForm
 
 
 # Create your views here.
@@ -16,6 +20,27 @@ class PostDetailView(DetailView):
     model = PostDb
     context_object_name = 'post'
     template_name = 'blog/post_detail.html'
+
+    # getting context for comment and comment form
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comments'] = CommentDb.objects.filter(post=self.object)
+        context['form'] = CommentForm()
+        return context
+
+
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = CommentDb
+    form_class = CommentForm
+    template_name = 'blog/post_detail.html'
+    success_url = reverse_lazy('home')
+
+
+    def form_valid(self, form):
+        form.instance.name = self.request.user
+        form.instance.post_id = self.kwargs['pk']
+
+        return super().form_valid(form)
 
 
 class PostCreationView(LoginRequiredMixin, CreateView):

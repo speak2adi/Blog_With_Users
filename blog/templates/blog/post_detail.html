@@ -1,5 +1,5 @@
 {% extends 'blog/base.html '%}
-
+{% load crispy_forms_tags %}
 {% block content %}
     <section class="section ">
         <h1> {{ post.title }}</h1>
@@ -14,4 +14,31 @@
         <a class="btn btn-outline-primary" href="{% url 'update-post' post.id %}"><i class="fa-solid fa-pen-to-square"></i></a>
         <a class="btn btn-outline-danger" href="{% url 'delete-post' post.id %}"><i class="fa-solid fa-trash"></i></a>
     {% endif %}
+
+<!--all comments -->
+    {% for comment in comments %}
+        <div class="comments" style="padding: 10px;">
+          <p class="font-weight-bold">
+            {{ comment.name }}
+            <span class=" text-muted font-weight-normal">
+              {{ comment.date_posted }}
+            </span>
+          </p>
+          {{ comment.comment | linebreaks }}
+        </div>
+    {% endfor %}
+
+<!--   post comment form-->
+{% if user.is_authenticated %}
+    <form action="{% url 'create-comment' post.id %}" method="POST">
+        {% csrf_token %}
+        <legend>Write a New Comment</legend>
+        <div class="messagebox">
+            {{ form|crispy }}
+            <button class="btn" type="submit">
+                Post Comment
+            </button>
+        </div>
+    </form>
+{% endif %}
 {% endblock %}
